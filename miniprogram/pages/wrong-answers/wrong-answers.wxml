@@ -1,0 +1,96 @@
+<!-- pages/wrong-answers/wrong-answers.wxml — Wrong answer book (quarterly plan) -->
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">📝 错题本</text>
+    <button class="btn-add" bindtap="toggleQuickAdd" size="mini">快速添加</button>
+  </view>
+
+  <!-- Quick add bar -->
+  <view wx:if="{{quickAdd}}" class="quick-add card">
+    <input class="qa-input" placeholder="输入题目..." value="{{quickQuestion}}" bindinput="e => { quickQuestion = e.detail.value }" />
+    <input class="qa-input-subject" placeholder="科目（可选）" value="{{quickSubject}}" bindinput="e => { quickSubject = e.detail.value }" />
+    <button class="btn-primary btn-sm" bindtap="submitQuickAdd" loading="{{submitting}}">添加</button>
+  </view>
+
+  <!-- Subject filter tabs -->
+  <scroll-view wx:if="{{subjects.length}}" class="subject-tabs" scroll-x>
+    <view class="tab {{activeSubject === '' ? 'active' : ''}}" bindtap="filterSubject" data-subject="">全部</view>
+    <view
+      wx:for="{{subjects}}"
+      wx:key="*this"
+      class="tab {{activeSubject === item ? 'active' : ''}}"
+      bindtap="filterSubject"
+      data-subject="{{item}}"
+    >{{item}}</view>
+  </scroll-view>
+
+  <!-- Loading -->
+  <view wx:if="{{loading}}" class="loading-state">加载中...</view>
+
+  <!-- Empty -->
+  <view wx:elif="{{answers.length === 0}}" class="empty-state">
+    <view class="empty-icon">📝</view>
+    <text class="empty-text">错题本还是空的</text>
+    <text class="empty-hint">需要包季度订阅才能使用</text>
+    <button class="btn-add-large" bindtap="showAddForm">+ 添加错题</button>
+  </view>
+
+  <!-- Answers list -->
+  <view wx:else>
+    <view class="answers-summary">共 {{total}} 道错题</view>
+    <view wx:for="{{answers}}" wx:key="id" class="answer-card card">
+      <view class="answer-header">
+        <text class="answer-subject" wx:if="{{item.subject}}">{{item.subject}}</text>
+        <text class="answer-date">{{formatDate(item.created_at)}}</text>
+      </view>
+
+      <view class="answer-question">{{item.question}}</view>
+
+      <view class="answer-answer" wx:if="{{item.answer || item.correct_answer}}">
+        <text class="answer-label">答案：</text>
+        <text>{{item.correct_answer || item.answer}}</text>
+      </view>
+
+      <view class="answer-actions">
+        <text class="action-link" bindtap="generateSimilar" data-item="{{item}}">🪄 AI 相似题</text>
+        <text class="action-link" bindtap="editAnswer" data-item="{{item}}">✏️ 编辑</text>
+        <text class="action-link danger" bindtap="deleteAnswer" data-id="{{item.id}}">🗑 删除</text>
+      </view>
+    </view>
+
+    <view wx:if="{{hasMore}}" class="load-more">上拉加载更多</view>
+    <view wx:else class="load-more end">— 已加载全部 —</view>
+  </view>
+
+  <!-- Modal form overlay -->
+  <view wx:if="{{showForm}}" class="form-overlay" bindtap="hideForm">
+    <view class="form-card" catchtap="void">
+      <view class="form-title">{{editingId ? '编辑错题' : '添加错题'}}</view>
+
+      <view class="form-field">
+        <text class="form-label">科目</text>
+        <input class="form-input" placeholder="如：高等数学" value="{{formSubject}}" bindinput="e => { formSubject = e.detail.value }" />
+      </view>
+
+      <view class="form-field">
+        <text class="form-label">题目 *</text>
+        <textarea class="form-textarea" placeholder="输入题目内容..." value="{{formQuestion}}" bindinput="e => { formQuestion = e.detail.value }" />
+      </view>
+
+      <view class="form-field">
+        <text class="form-label">我的答案</text>
+        <textarea class="form-textarea" placeholder="输入你的答案..." value="{{formAnswer}}" bindinput="e => { formAnswer = e.detail.value }" />
+      </view>
+
+      <view class="form-field">
+        <text class="form-label">正确答案</text>
+        <textarea class="form-textarea" placeholder="输入正确答案..." value="{{formCorrectAnswer}}" bindinput="e => { formCorrectAnswer = e.detail.value }" />
+      </view>
+
+      <view class="form-buttons">
+        <button class="btn-cancel" bindtap="hideForm">取消</button>
+        <button class="btn-primary" bindtap="submitForm" loading="{{submitting}}">{{editingId ? '保存' : '添加'}}</button>
+      </view>
+    </view>
+  </view>
+</view>

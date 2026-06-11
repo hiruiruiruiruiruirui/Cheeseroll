@@ -1,0 +1,117 @@
+/* 首页样式 */
+.hero-section {
+  text-align: center;
+  padding: 40rpx 0 24rpx;
+}
+.hero-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12rpx;
+}
+.hero-desc {
+  font-size: 28rpx;
+  color: #888;
+}
+
+/* 上传区域 */
+.upload-area {
+  text-align: center;
+  padding: 60rpx 28rpx;
+  border: 3rpx dashed #d0d5dd;
+  background: #fafbfc;
+  transition: all 0.2s;
+}
+.upload-area:active {
+  background: #f0f4ff;
+  border-color: #1a73e8;
+}
+.upload-icon {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+}
+.upload-text {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+.upload-hint {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 12rpx;
+}
+.upload-tips {
+  margin-top: 16rpx;
+  color: #1a73e8;
+  font-size: 28rpx;
+}
+
+/* 进度条 */
+.progress-section {
+  text-align: center;
+}
+.progress-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+.progress-bar {
+  height: 12rpx;
+  background: #e8edf2;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1a73e8, #4a9af5);
+  border-radius: 6rpx;
+  transition: width 0.5s ease;
+}
+.progress-text {
+  font-size: 24rpx;
+  color: #888;
+  margin-top: 8rpx;
+}
+
+/* 记录项 */
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin: 32rpx 0 16rpx;
+}
+.record-item {
+  transition: background 0.2s;
+}
+.record-item:active {
+  background: #f8f9ff;
+}
+.record-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 16rpx;
+}
+.status-badge {
+  font-size: 24rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+.status-completed { background: #e8f5e9; color: #2e7d32; }
+.status-processing { background: #fff3e0; color: #e65100; }
+.status-failed { background: #ffebee; color: #c62828; }
+
+/* 格式提示 */
+.format-hints {
+  display: flex;
+  justify-content: center;
+  gap: 24rpx;
+  margin-top: 48rpx;
+  padding: 24rpx 0;
+}
+.hint-item {
+  font-size: 24rpx;
+  color: #999;
+}

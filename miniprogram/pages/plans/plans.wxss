@@ -1,0 +1,186 @@
+/* pages/plans/plans.wxss — Subscription plans page styles */
+
+.container {
+  padding: 24rpx;
+  padding-bottom: 60rpx;
+}
+
+/* Current subscription banner */
+.current-banner {
+  background: linear-gradient(135deg, #e8f0fe, #d4e4fc);
+  margin-bottom: 24rpx;
+}
+.banner-title {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+.banner-body {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+.banner-plan {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a73e8;
+}
+.banner-status {
+  font-size: 24rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+.banner-status.active {
+  background: #e6f4ea;
+  color: #1e8e3e;
+}
+.banner-status.expired {
+  background: #fce8e6;
+  color: #d93025;
+}
+.banner-quota {
+  font-size: 26rpx;
+  color: #555;
+  margin-bottom: 8rpx;
+}
+.banner-expire {
+  font-size: 24rpx;
+  color: #888;
+}
+
+/* Trial banner */
+.trial-banner {
+  margin-bottom: 24rpx;
+}
+.trial-banner .banner-body {
+  font-size: 26rpx;
+  color: #555;
+  display: block;
+}
+
+/* Section title */
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  margin-bottom: 24rpx;
+  color: #333;
+}
+
+/* Plan cards */
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.plan-card {
+  position: relative;
+  text-align: center;
+  padding: 40rpx 32rpx;
+  transition: all 0.2s;
+}
+.plan-card.recommended {
+  border: 4rpx solid #1a73e8;
+  background: #fafcff;
+}
+.plan-card.current {
+  border: 4rpx solid #34a853;
+  background: #f8fdf8;
+}
+
+/* Badges */
+.plan-badge {
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a73e8;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 32rpx;
+  border-radius: 24rpx;
+}
+.plan-badge.current-badge {
+  background: #34a853;
+}
+
+.plan-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  margin-top: 8rpx;
+}
+
+.plan-price {
+  margin: 20rpx 0;
+}
+.price-symbol {
+  font-size: 28rpx;
+  color: #1a73e8;
+  vertical-align: top;
+}
+.price-num {
+  font-size: 64rpx;
+  font-weight: 700;
+  color: #1a73e8;
+  line-height: 1;
+}
+.price-duration {
+  font-size: 24rpx;
+  color: #888;
+}
+.plan-card.recommended .price-num,
+.plan-card.recommended .price-symbol {
+  color: #1557b0;
+}
+
+.plan-quota {
+  font-size: 24rpx;
+  color: #888;
+  margin-bottom: 20rpx;
+}
+
+/* Features */
+.plan-features {
+  text-align: left;
+  margin: 24rpx 0;
+}
+.feature-item {
+  font-size: 26rpx;
+  color: #555;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+/* Subscribe button */
+.btn-subscribe {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx;
+  border-radius: 40rpx;
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  margin-top: 16rpx;
+}
+.btn-subscribe.primary {
+  background: linear-gradient(135deg, #1a73e8, #1557b0);
+  color: #fff;
+}
+.btn-subscribe[disabled] {
+  opacity: 0.5;
+}
+
+/* Footer */
+.footer-note {
+  margin-top: 40rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: #aaa;
+}

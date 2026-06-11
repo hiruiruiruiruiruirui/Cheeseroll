@@ -1,0 +1,46 @@
+<!-- pages/share/share.wxml — Public shared note view -->
+<view class="container">
+  <!-- Loading -->
+  <view wx:if="{{loading}}" class="state-card">
+    <view class="spinner"></view>
+    <text class="state-text">加载中...</text>
+  </view>
+
+  <!-- Error -->
+  <view wx:elif="{{error}}" class="state-card">
+    <view class="state-icon">😕</view>
+    <text class="state-error">{{error}}</text>
+  </view>
+
+  <!-- Note content -->
+  <view wx:else>
+    <!-- Header bar -->
+    <view class="share-header">
+      <view class="share-title">{{record.title}}</view>
+      <view class="share-meta">
+        <text class="share-from">分享自 AI 学习助手</text>
+        <text class="share-date">{{record.created_at}}</text>
+      </view>
+    </view>
+
+    <!-- Markdown body -->
+    <view class="markdown-body card">
+      <rich-text nodes="{{markdownNodes}}"></rich-text>
+    </view>
+
+    <!-- CTA banner -->
+    <view class="cta-card card">
+      <view class="cta-icon">📚</view>
+      <view class="cta-text">
+        <text class="cta-title">AI 学习助手</text>
+        <text class="cta-desc">上传课件，自动生成复习笔记</text>
+      </view>
+    </view>
+    <button class="btn-cta" bindtap="goToApp">打开小程序</button>
+
+    <!-- Share button -->
+    <button class="btn-share" open-type="share">
+      <text>📤 分享给同学</text>
+    </button>
+  </view>
+</view>

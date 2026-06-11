@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 学习资料整理助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;font-size:15px;color:#333;background:#f5f6fa;line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* Header */
+.app-header{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+.header-content{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px}
+.logo{font-size:20px;font-weight:700;color:#1a73e8;cursor:pointer}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:15px;color:#666;transition:color .2s;padding:4px 0;border-bottom:2px solid transparent;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:#1a73e8;border-bottom-color:#1a73e8}
+
+/* Layout */
+main{min-height:calc(100vh - 56px)}
+.container{max-width:900px;margin:0 auto;padding:24px}
+.card{background:#fff;border-radius:12px;padding:24px;margin-bottom:16px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 24px;border-radius:8px;font-size:15px;font-weight:500;border:none;cursor:pointer;transition:all .2s}
+.btn-primary{background:#1a73e8;color:#fff}.btn-primary:hover{background:#1557b0}.btn-primary:disabled{background:#a0c4f1;cursor:not-allowed}
+.btn-outline{background:transparent;color:#1a73e8;border:2px solid #1a73e8}.btn-outline:hover{background:#f0f4ff}
+.btn-sm{padding:6px 16px;font-size:13px}
+.text-muted{color:#888}.text-sm{font-size:13px}.mt-16{margin-top:16px}.mb-16{margin-bottom:16px}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+
+/* Hero */
+.hero{text-align:center;padding:40px 0 24px}
+.hero h1{font-size:28px;margin-bottom:8px}
+.hero p{color:#888;font-size:16px}
+
+/* Upload zone */
+.upload-zone{border:3px dashed #d0d5dd;border-radius:12px;background:#fafbfc;cursor:pointer;transition:all .2s}
+.upload-zone:hover,.upload-zone.dragging{background:#f0f4ff;border-color:#1a73e8}
+.upload-zone.disabled{opacity:.5;cursor:not-allowed}
+.upload-content{text-align:center;padding:60px 24px}
+.upload-icon{font-size:64px;margin-bottom:12px}
+.upload-text{font-size:18px;color:#333;font-weight:500;margin-bottom:8px}
+.upload-hint{font-size:14px;color:#999}
+.upload-error{margin-top:12px;color:#e53935;font-size:14px}
+
+/* Progress */
+.progress-card{text-align:center;padding:40px 24px}
+.progress-bar{height:10px;background:#e0e0e0;border-radius:5px;overflow:hidden;margin:20px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#1a73e8,#4fc3f7);border-radius:5px;transition:width .5s}
+.progress-status{font-size:16px;color:#555}
+.progress-pct{font-size:14px;color:#999}
+.spin{display:inline-block;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Section */
+.section{margin-top:32px}.section h3{font-size:18px;margin-bottom:12px}
+
+/* Records */
+.record-item{cursor:pointer;transition:background .2s}.record-item:hover{background:#f8f9ff}
+.record-title{font-weight:500;font-size:16px}
+
+/* Badges */
+.badge{font-size:12px;padding:2px 12px;border-radius:20px}
+.badge-completed{background:#e8f5e9;color:#2e7d32}
+.badge-processing{background:#fff3e0;color:#e65100}
+.badge-failed{background:#ffebee;color:#c62828}
+.link{color:#1a73e8;font-size:13px;cursor:pointer}.link:hover{text-decoration:underline}
+
+/* Formats */
+.formats{display:flex;gap:24px;justify-content:center;margin-top:48px;padding:24px 0;color:#999;font-size:14px}
+
+/* Plans */
+.status-card{margin-bottom:24px;background:#fafafa}.status-card.active{background:linear-gradient(135deg,#e8f0fe,#d4e4fc)}
+.status-title{font-size:16px;color:#333;margin-bottom:12px}
+.status-body{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:14px;color:#555}
+.status-plan{font-size:22px;font-weight:700;color:#1a73e8}
+.status-badge{font-size:12px;padding:2px 12px;border-radius:12px}
+.status-badge.active{background:#e6f4ea;color:#1e8e3e}
+.status-badge.expired{background:#fce8e6;color:#d93025}
+.status-quota{font-size:14px;color:#666}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.plan-card{position:relative;text-align:center;padding:36px 28px}
+.plan-card.recommended{border:2px solid #1a73e8}
+.plan-card.current{border:2px solid #34a853;background:#f8fdf8}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#1a73e8;color:#fff;padding:2px 24px;border-radius:12px;font-size:13px}
+.plan-badge.current-badge{background:#34a853}
+.plan-card h3{font-size:20px;margin-bottom:8px}
+.plan-price{font-size:40px;font-weight:700;color:#1a73e8;margin:16px 0 4px}
+.plan-duration{font-size:14px;color:#888;font-weight:400}
+.plan-quota{font-size:13px;color:#888;margin-bottom:16px}
+.plan-features{text-align:left;list-style:none;margin:20px 0}
+.plan-features li{padding:6px 0;font-size:14px;border-bottom:1px solid #f0f0f0}
+.plan-features li:last-child{border-bottom:none}
+button[disabled]{opacity:.5;cursor:not-allowed}
+
+/* Profile */
+.profile-card{display:flex;align-items:center;gap:16px}
+.avatar{font-size:48px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;background:#e8f0fe;border-radius:50%}
+.nickname{font-size:18px;font-weight:500}
+.menu-item{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.menu-item:last-child{border-bottom:none}.menu-item:hover{color:#1a73e8}
+
+/* Wrong answers */
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.page-header h2{margin:0}
+.summary{font-size:13px;color:#999;margin-bottom:12px}
+.subject-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{font-size:13px;padding:4px 16px;border-radius:16px;background:#f0f0f0;color:#666;cursor:pointer}.tab:hover{background:#e0e0e0}
+.tab.active{background:#1a73e8;color:#fff}
+.answer-card{margin-bottom:16px}
+.answer-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.answer-subject{font-size:12px;background:#e8f0fe;color:#1a73e8;padding:2px 12px;border-radius:12px}
+.answer-date{font-size:12px;color:#aaa}
+.answer-question{font-size:15px;color:#333;line-height:1.6;margin-bottom:10px}
+.answer-answer{font-size:14px;color:#555;line-height:1.5;background:#f8fdf8;padding:12px;border-radius:8px;margin-bottom:10px}
+.answer-label{font-weight:600;color:#34a853}
+.answer-actions{display:flex;gap:20px;padding-top:10px;border-top:1px solid #f0f0f0}
+.action-link{font-size:13px;color:#1a73e8;cursor:pointer}.action-link:hover{text-decoration:underline}
+.action-link.danger{color:#d93025}
+
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}}
+.modal-card{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:600px;max-height:80vh;overflow-y:auto;animation:slideUp .3s}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}}
+.modal-card h3{margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:14px;color:#555;margin-bottom:6px}
+.form-input,.form-textarea{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit}
+.form-textarea{resize:vertical}
+.form-buttons{display:flex;gap:12px;margin-top:20px}.form-buttons button{flex:1}
+
+/* Markdown */
+.md-content{line-height:1.8;font-size:15px}
+.md-content h1,.md-content h2,.md-content h3,.md-content h4{color:#1a73e8;margin:20px 0 10px}
+.md-content h1{font-size:24px}.md-content h2{font-size:20px}.md-content h3{font-size:17px}.md-content h4{font-size:15px}
+.md-content p{margin:8px 0}
+.md-content ul,.md-content ol{padding-left:24px;margin:8px 0}
+.md-content li{margin:4px 0}
+.md-content strong{color:#333}
+.md-content code{background:#f0f0f0;padding:2px 6px;border-radius:3px;font-size:13px}
+.md-content pre{background:#f5f5f5;padding:16px;border-radius:8px;overflow-x:auto;margin:12px 0}
+.md-content pre code{background:none;padding:0}
+.md-content blockquote{border-left:3px solid #1a73e8;padding:8px 16px;margin:12px 0;background:#f8f9ff;color:#555}
+
+/* Share */
+.share-header{background:linear-gradient(135deg,#1a73e8,#1557b0);color:#fff;padding:32px;border-radius:16px;margin-bottom:24px}
+.share-header h1{font-size:24px;margin-bottom:8px}
+.share-meta{font-size:13px;opacity:.85}
+.cta-card{text-align:center;padding:32px}
+.cta-card p{color:#888;margin-bottom:16px}
+
+/* Pagination */
+.pagination{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
+
+/* Empty */
+.empty{text-align:center;padding:80px 24px;color:#999}
+.empty-icon{font-size:60px;margin-bottom:12px}
+
+/* Page visibility */
+.page{display:none}.page.active{display:block}
+
+/* Responsive */
+@media(max-width:640px){
+  .header-content{padding:0 16px}
+  .nav-links{gap:16px}
+  .nav-links a{font-size:14px}
+  .container{padding:16px}
+  .plans-grid{grid-template-columns:1fr}
+  .modal-card{margin:16px;padding:24px}
+  .hero h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+
+<!-- Header Navigation -->
+<header class="app-header">
+  <div class="header-content">
+    <span class="logo" onclick="navigate('home')">📚 AI学习助手</span>
+    <nav class="nav-links" id="navLinks">
+      <a onclick="navigate('home')" data-page="home" class="active">首页</a>
+      <a onclick="navigate('history')" data-page="history">历史</a>
+      <a onclick="navigate('plans')" data-page="plans">订阅</a>
+      <a onclick="navigate('wrong')" data-page="wrong">错题本</a>
+      <a onclick="navigate('mine')" data-page="mine">我的</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>📚 AI 学习资料整理助手</h1>
+    <p>上传课件，自动生成结构化复习笔记 + A4 PDF 导出</p>
+  </div>
+
+  <!-- Upload Zone -->
+  <div class="upload-zone" id="uploadZone" onclick="simulateUpload()">
+    <div class="upload-content">
+      <div class="upload-icon">📤</div>
+      <div class="upload-text">点击或拖拽文件到此处上传</div>
+      <div class="upload-hint">支持 .pptx / .docx / .pdf（最大 50MB）</div>
+    </div>
+  </div>
+
+  <!-- Progress (hidden by default) -->
+  <div class="card progress-card" id="progressCard" style="display:none">
+    <div style="font-size:60px;margin-bottom:16px">🤖</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+    <div class="progress-status" id="progressStatus">排队中...</div>
+    <div class="progress-pct" id="progressPct">5%</div>
+  </div>
+
+  <!-- Recent Records -->
+  <div class="section" id="recentSection">
+    <h3>📋 最近笔记</h3>
+    <div class="card record-item" onclick="navigate('result','demo1')">
+      <div class="flex-between">
+        <span class="record-title">高等数学 — 微积分基础复习笔记</span>
+        <span class="text-sm text-muted">6/8 14:30</span>
+      </div>
+      <div class="flex-between mt-16">
+        <span class="badge badge-completed">✅ 已完成</span>
+        <span class="link">查看详情 →</span>
+      </div>
+    </div>
+    <div class="card record-item" onclick="navigate('result','demo2')">
+      <div class="flex-between">
+        <span class="record-title">大学物理 — 电磁学重点总结</span>
+        <span class="text-sm text-muted">6/7 19:15</span>
+      </div>
+      <div class="flex-between mt-16">
+        <span class="badge badge-completed">✅ 已完成</span>
+        <span class="link">查看详情 →</span>
+      </div>
+    </div>
+    <div class="card record-item" onclick="navigate('result','demo3')">
+      <div class="flex-between">
+        <span class="record-title">数据结构 — 二叉树与图算法</span>
+        <span class="text-sm text-muted">6/6 22:00</span>
+      </div>
+      <div class="flex-between mt-16">
+        <span class="badge badge-processing">⏳ 处理中</span>
+        <span class="text-sm text-muted">处理中...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supported Formats -->
+  <div class="formats">
+    <span>✅ PowerPoint (.pptx)</span>
+    <span>✅ Word (.docx)</span>
+    <span>✅ PDF (.pdf)</span>
+  </div>
+</div>
+
+<!-- ==================== RESULT PAGE ==================== -->
+<div class="page" id="page-result">
+  <div class="card">
+    <h1 style="font-size:22px;font-weight:600" id="resultTitle">高等数学 — 微积分基础复习笔记</h1>
+    <div class="flex-between mt-16">
+      <span class="text-sm text-muted" id="resultDate">2026/6/8 14:30</span>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-primary btn-sm" onclick="alert('📥 PDF 下载功能将在连接后端后可用')">📥 下载 PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="shareDemo()">🔗 分享</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="md-content" id="resultMarkdown"></div>
+  </div>
+</div>
+
+<!-- ==================== HISTORY PAGE ==================== -->
+<div class="page" id="page-history">
+  <h2 style="margin-bottom:20px">📋 历史记录</h2>
+
+  <div class="card record-item" onclick="navigate('result','demo1')">
+    <div class="flex-between">
+      <span style="font-weight:500;font-size:16px">高等数学 — 微积分基础复习笔记</span>
+      <span class="text-sm text-muted">2026/6/8</span>
+    </div>
+    <div class="flex-between mt-16">
+      <span class="badge badge-completed">✅ 已完成</span>
+      <span class="link">查看 →</span>
+    </div>
+  </div>
+
+  <div class="card record-item" onclick="navigate('result','demo2')">
+    <div class="flex-between">
+      <span style="font-weight:500;font-size:16px">大学物理 — 电磁学重点总结</span>
+      <span class="text-sm text-muted">2026/6/7</span>
+    </div>
+    <div class="flex-between mt-16">
+      <span class="badge badge-completed">✅ 已完成</span>
+      <span class="link">查看 →</span>
+    </div>
+  </div>
+
+  <div class="card record-item" onclick="navigate('result','demo3')">
+    <div class="flex-between">
+      <span style="font-weight:500;font-size:16px">数据结构 — 二叉树与图算法</span>
+      <span class="text-sm text-muted">2026/6/6</span>
+    </div>
+    <div class="flex-between mt-16">
+      <span class="badge badge-completed">✅ 已完成</span>
+      <span class="link">查看 →</span>
+    </div>
+  </div>
+
+  <div class="card record-item">
+    <div class="flex-between">
+      <span style="font-weight:500;font-size:16px">线性代数 — 矩阵与行列式</span>
+      <span class="text-sm text-muted">2026/6/5</span>
+    </div>
+    <div class="flex-between mt-16">
+      <span class="badge badge-failed">❌ 失败</span>
+      <span class="text-sm text-muted">文件解析失败</span>
+    </div>
+  </div>
+
+  <div class="card record-item" onclick="navigate('result','demo4')">
+    <div class="flex-between">
+      <span style="font-weight:500;font-size:16px">有机化学 — 反应机理总结</span>
+      <span class="text-sm text-muted">2026/6/4</span>
+    </div>
+    <div class="flex-between mt-16">
+      <span class="badge badge-completed">✅ 已完成</span>
+      <span class="link">查看 →</span>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <button class="btn btn-outline btn-sm" disabled>上一页</button>
+    <span class="text-sm text-muted">1 / 2</span>
+    <button class="btn btn-outline btn-sm">下一页</button>
+  </div>
+</div>
+
+<!-- ==================== PLANS PAGE ==================== -->
+<div class="page" id="page-plans">
+  <h2 style="margin-bottom:20px">💎 订阅方案</h2>
+
+  <!-- Status -->
+  <div class="status-card card active">
+    <div class="status-title">📋 当前订阅</div>
+    <div class="status-body">
+      <span class="status-plan">包月</span>
+      <span class="status-badge active">生效中</span>
+    </div>
+    <div class="status-quota">今日剩余：8 次</div>
+  </div>
+
+  <!-- Plan Cards -->
+  <div class="plans-grid">
+    <div class="card plan-card">
+      <h3>📅 包天</h3>
+      <div class="plan-price">¥9.9<span class="plan-duration">/天</span></div>
+      <div class="plan-quota">每日 1 次</div>
+      <ul class="plan-features">
+        <li>✅ 单次资料整理</li>
+        <li>✅ PDF 导出 1 次</li>
+      </ul>
+      <button class="btn btn-primary" style="width:100%" onclick="alert('💡 连接后端后可真实支付')">立即订阅</button>
+    </div>
+
+    <div class="card plan-card recommended current">
+      <div class="plan-badge">🔥 推荐</div>
+      <h3>📅 包月</h3>
+      <div class="plan-price">¥49<span class="plan-duration">/月</span></div>
+      <div class="plan-quota">不限次数</div>
+      <ul class="plan-features">
+        <li>✅ 不限次数整理</li>
+        <li>✅ 不限次导出</li>
+        <li>✅ 多格式支持</li>
+      </ul>
+      <button class="btn btn-primary" style="width:100%" disabled>当前方案</button>
+    </div>
+
+    <div class="card plan-card">
+      <h3>📅 包季度</h3>
+      <div class="plan-price">¥99<span class="plan-duration">/季度</span></div>
+      <div class="plan-quota">不限次数</div>
+      <ul class="plan-features">
+        <li>✅ 不限次数整理</li>
+        <li>✅ 不限次导出</li>
+        <li>✅ 多格式支持</li>
+        <li>✅ 错题本</li>
+        <li>✅ 进度追踪</li>
+      </ul>
+      <button class="btn btn-primary" style="width:100%" onclick="alert('💡 连接后端后可真实支付')">立即订阅</button>
+    </div>
+  </div>
+
+  <p style="margin-top:40px;text-align:center;font-size:13px;color:#aaa">当前版本不支持自动续费，到期后需手动续订。</p>
+</div>
+
+<!-- ==================== WRONG ANSWERS PAGE ==================== -->
+<div class="page" id="page-wrong">
+  <div class="page-header">
+    <h2>📝 错题本</h2>
+    <button class="btn btn-primary btn-sm" onclick="openWrongForm()">+ 添加错题</button>
+  </div>
+
+  <!-- Subject Tabs -->
+  <div class="subject-tabs" id="wrongSubjectTabs">
+    <span class="tab active" onclick="filterWrongSubject(this,'')">全部</span>
+    <span class="tab" onclick="filterWrongSubject(this,'高等数学')">高等数学</span>
+    <span class="tab" onclick="filterWrongSubject(this,'大学物理')">大学物理</span>
+    <span class="tab" onclick="filterWrongSubject(this,'数据结构')">数据结构</span>
+    <span class="tab" onclick="filterWrongSubject(this,'有机化学')">有机化学</span>
+  </div>
+
+  <p class="summary">共 4 道错题</p>
+
+  <!-- Wrong Answer Cards -->
+  <div id="wrongAnswersList">
+    <div class="card answer-card" data-subject="高等数学">
+      <div class="answer-header">
+        <span class="answer-subject">高等数学</span>
+        <span class="answer-date">6/8</span>
+      </div>
+      <div class="answer-question">求极限：lim(x→0) (sin x - x) / x³</div>
+      <div class="answer-answer">
+        <span class="answer-label">答案：</span>
+        使用泰勒展开：sin x = x - x³/6 + O(x⁵)，代入得 lim(x→0) ( -x³/6 ) / x³ = <strong>-1/6</strong>
+      </div>
+      <div class="answer-actions">
+        <span class="action-link" onclick="alert('🪄 AI 生成相似题功能将在连接后端后可用')">🪄 AI 相似题</span>
+        <span class="action-link">✏️ 编辑</span>
+        <span class="action-link danger" onclick="if(confirm('确定删除？')) this.closest('.answer-card').remove()">🗑 删除</span>
+      </div>
+    </div>
+
+    <div class="card answer-card" data-subject="大学物理">
+      <div class="answer-header">
+        <span class="answer-subject">大学物理</span>
+        <span class="answer-date">6/7</span>
+      </div>
+      <div class="answer-question">两块带电平行板之间的电场强度如何计算？</div>
+      <div class="answer-answer">
+        <span class="answer-label">答案：</span>
+        E = σ / ε₀，其中 σ 为面电荷密度，ε₀ 为真空介电常数。方向垂直于板面。
+      </div>
+      <div class="answer-actions">
+        <span class="action-link" onclick="alert('🪄 AI 生成相似题功能将在连接后端后可用')">🪄 AI 相似题</span>
+        <span class="action-link">✏️ 编辑</span>
+        <span class="action-link danger" onclick="if(confirm('确定删除？')) this.closest('.answer-card').remove()">🗑 删除</span>
+      </div>
+    </div>
+
+    <div class="card answer-card" data-subject="数据结构">
+      <div class="answer-header">
+        <span class="answer-subject">数据结构</span>
+        <span class="answer-date">6/6</span>
+      </div>
+      <div class="answer-question">红黑树与 AVL 树的主要区别是什么？</div>
+      <div class="answer-answer">
+        <span class="answer-label">答案：</span>
+        AVL 树追求严格平衡（平衡因子 ≤ 1），插入删除需要更多旋转；红黑树允许一定不平衡，插入最多 2 次旋转，删除最多 3 次旋转，综合性能更优。
+      </div>
+      <div class="answer-actions">
+        <span class="action-link" onclick="alert('🪄 AI 生成相似题功能将在连接后端后可用')">🪄 AI 相似题</span>
+        <span class="action-link">✏️ 编辑</span>
+        <span class="action-link danger" onclick="if(confirm('确定删除？')) this.closest('.answer-card').remove()">🗑 删除</span>
+      </div>
+    </div>
+
+    <div class="card answer-card" data-subject="有机化学">
+      <div class="answer-header">
+        <span class="answer-subject">有机化学</span>
+        <span class="answer-date">6/5</span>
+      </div>
+      <div class="answer-question">SN1 与 SN2 反应机理的核心区别？</div>
+      <div class="answer-answer">
+        <span class="answer-label">答案：</span>
+        SN1：两步反应，先形成碳正离子中间体，后亲核进攻；适合叔卤代烷。SN2：一步协同反应，亲核试剂背面进攻，构型翻转；适合伯卤代烷。
+      </div>
+      <div class="answer-actions">
+        <span class="action-link" onclick="alert('🪄 AI 生成相似题功能将在连接后端后可用')">🪄 AI 相似题</span>
+        <span class="action-link">✏️ 编辑</span>
+        <span class="action-link danger" onclick="if(confirm('确定删除？')) this.closest('.answer-card').remove()">🗑 删除</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MINE PAGE ==================== -->
+<div class="page" id="page-mine">
+  <h2 style="margin-bottom:20px">👤 我的</h2>
+
+  <div class="card profile-card">
+    <div class="avatar">📚</div>
+    <div class="profile-info">
+      <div class="nickname">李同学</div>
+      <div class="text-sm text-muted">138****8888</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="menu-item" onclick="navigate('history')">
+      <span>📋 我的笔记</span><span>→</span>
+    </div>
+    <div class="menu-item" onclick="navigate('wrong')">
+      <span>📝 错题本</span><span>→</span>
+    </div>
+    <div class="menu-item" onclick="navigate('plans')">
+      <span>💎 订阅管理</span><span>→</span>
+    </div>
+  </div>
+
+  <button class="btn btn-outline" style="width:100%" onclick="alert('已退出登录')">退出登录</button>
+</div>
+
+<!-- ==================== SHARE PAGE ==================== -->
+<div class="page" id="page-share">
+  <div class="share-header">
+    <h1 id="shareTitle">高等数学 — 微积分基础复习笔记</h1>
+    <div class="share-meta">分享自 AI 学习助手 · 2026/6/8</div>
+  </div>
+
+  <div class="card">
+    <div class="md-content" id="shareMarkdown"></div>
+  </div>
+
+  <div class="card cta-card">
+    <div style="font-size:48px;margin-bottom:12px">📚</div>
+    <p style="font-size:16px">AI 学习助手 — 上传课件，自动生成复习笔记</p>
+    <button class="btn btn-primary" onclick="navigate('home')">打开应用</button>
+  </div>
+</div>
+
+<!-- ==================== WRONG ANSWER FORM MODAL ==================== -->
+<div class="modal-overlay" id="wrongFormModal" style="display:none" onclick="if(event.target===this)closeWrongForm()">
+  <div class="modal-card">
+    <h3 id="wrongFormTitle">添加错题</h3>
+    <div class="form-group">
+      <label>科目</label>
+      <input class="form-input" id="wrongFormSubject" placeholder="如：高等数学">
+    </div>
+    <div class="form-group">
+      <label>题目 *</label>
+      <textarea class="form-textarea" id="wrongFormQuestion" rows="3" placeholder="输入题目内容..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>我的答案</label>
+      <textarea class="form-textarea" id="wrongFormAnswer" rows="2" placeholder="输入你的答案..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>正确答案</label>
+      <textarea class="form-textarea" id="wrongFormCorrect" rows="2" placeholder="输入正确答案..."></textarea>
+    </div>
+    <div class="form-buttons">
+      <button class="btn btn-outline" onclick="closeWrongForm()">取消</button>
+      <button class="btn btn-primary" onclick="saveWrongAnswer()">添加</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- .container -->
+</main>
+
+<script>
+// ==================== NAVIGATION ====================
+function navigate(page, param) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  // Show target page
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+
+  // Update nav links
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === page);
+  });
+
+  // Handle result page with demo data
+  if (page === 'result') {
+    loadDemoResult(param || 'demo1');
+  }
+
+  // Handle share page
+  if (page === 'share') {
+    loadShareContent(param || 'demo1');
+  }
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+
+// ==================== UPLOAD SIMULATION ====================
+function simulateUpload() {
+  const progressCard = document.getElementById('progressCard');
+  const progressFill = document.getElementById('progressFill');
+  const progressStatus = document.getElementById('progressStatus');
+  const progressPct = document.getElementById('progressPct');
+  const uploadZone = document.getElementById('uploadZone');
+  const recentSection = document.getElementById('recentSection');
+
+  // Show progress
+  uploadZone.classList.add('disabled');
+  uploadZone.querySelector('.upload-text').textContent = '处理中...';
+  progressCard.style.display = 'block';
+
+  // Simulate progress
+  const steps = [
+    { pct: 5,  status: '排队中...',       delay: 800 },
+    { pct: 20, status: '正在解析文档...',  delay: 1500 },
+    { pct: 60, status: '🤖 AI 正在整理笔记...', delay: 2500 },
+    { pct: 90, status: '正在生成 PDF...',  delay: 1500 },
+    { pct: 100,status: '✅ 完成！',       delay: 800 },
+  ];
+
+  let i = 0;
+  function next() {
+    if (i >= steps.length) {
+      // Done — go to result
+      setTimeout(() => {
+        progressCard.style.display = 'none';
+        uploadZone.classList.remove('disabled');
+        uploadZone.querySelector('.upload-text').textContent = '点击或拖拽文件到此处上传';
+        progressFill.style.width = '5%';
+        progressStatus.textContent = '排队中...';
+        progressPct.textContent = '5%';
+
+        // Add a new record to recent
+        const newRecord = document.createElement('div');
+        newRecord.className = 'card record-item';
+        newRecord.onclick = () => navigate('result', 'demo-new');
+        newRecord.innerHTML = `
+          <div class="flex-between">
+            <span class="record-title">机器学习 — 神经网络基础</span>
+            <span class="text-sm text-muted">刚刚</span>
+          </div>
+          <div class="flex-between mt-16">
+            <span class="badge badge-completed">✅ 已完成</span>
+            <span class="link">查看详情 →</span>
+          </div>
+        `;
+        recentSection.querySelector('h3').after(newRecord);
+
+        navigate('result', 'demo-new');
+      }, 600);
+      return;
+    }
+
+    const step = steps[i];
+    progressFill.style.width = step.pct + '%';
+    progressStatus.textContent = step.status;
+    progressPct.textContent = step.pct + '%';
+    i++;
+    setTimeout(next, step.delay);
+  }
+  next();
+}
+
+// ==================== DEMO RESULT DATA ====================
+function loadDemoResult(id) {
+  const data = {
+    'demo1': {
+      title: '高等数学 — 微积分基础复习笔记',
+      date: '2026/6/8 14:30',
+      content: `
+<h2>📘 知识大纲</h2>
+<ul>
+  <li><strong>极限与连续</strong> — 极限的定义、无穷小量、连续性判断</li>
+  <li><strong>导数与微分</strong> — 导数定义、求导法则、高阶导数</li>
+  <li><strong>微分中值定理</strong> — 罗尔定理、拉格朗日中值定理</li>
+  <li><strong>不定积分</strong> — 基本积分公式、换元积分法、分部积分法</li>
+</ul>
+
+<h2>🔥 重点提炼</h2>
+<h3>1. 极限计算</h3>
+<p>掌握 <strong>洛必达法则</strong> 的使用条件：0/0 型或 ∞/∞ 型不定式。注意：使用前必须验证条件！</p>
+
+<h3>2. 导数应用</h3>
+<p>函数的单调性由 $f'(x)$ 的符号决定：</p>
+<ul>
+  <li>$f'(x) > 0$ → 函数递增</li>
+  <li>$f'(x) < 0$ → 函数递减</li>
+  <li>$f'(x) = 0$ → 可能的极值点（需用二阶导验证）</li>
+</ul>
+
+<h3>3. 积分技巧</h3>
+<p><strong>分部积分法</strong>：$\\int u\\,dv = uv - \\int v\\,du$</p>
+<p>口诀：<strong>反、对、幂、指、三</strong> — 按此顺序选择 $u$</p>
+
+<h2>💡 关键概念</h2>
+<table style="width:100%;border-collapse:collapse;margin:12px 0">
+  <tr style="background:#e8f0fe">
+    <th style="padding:8px 12px;text-align:left;border:1px solid #ddd">概念</th>
+    <th style="padding:8px 12px;text-align:left;border:1px solid #ddd">公式/说明</th>
+  </tr>
+  <tr>
+    <td style="padding:8px 12px;border:1px solid #ddd">导数的定义</td>
+    <td style="padding:8px 12px;border:1px solid #ddd">$f'(x) = \\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h}$</td>
+  </tr>
+  <tr>
+    <td style="padding:8px 12px;border:1px solid #ddd">链式法则</td>
+    <td style="padding:8px 12px;border:1px solid #ddd">$(f \\circ g)'(x) = f'(g(x)) \\cdot g'(x)$</td>
+  </tr>
+  <tr>
+    <td style="padding:8px 12px;border:1px solid #ddd">换元积分</td>
+    <td style="padding:8px 12px;border:1px solid #ddd">$\\int f(g(x))g'(x)dx = \\int f(u)du$</td>
+  </tr>
+</table>
+
+<h2>⚠️ 考点提示</h2>
+<ul>
+  <li>📌 <strong>高频考点：</strong>利用洛必达法则求极限（必考 1 题）</li>
+  <li>📌 <strong>高频考点：</strong>利用中值定理证明不等式</li>
+  <li>📌 <strong>易错点：</strong>换元积分时忘记更换积分上下限</li>
+  <li>📌 <strong>易错点：</strong>使用洛必达法则前未验证 0/0 条件</li>
+</ul>
+
+<blockquote>
+  💡 <strong>复习建议：</strong>每周至少练习 3 道极限题 + 2 道积分题，重点关注洛必达法则的条件验证和分部积分的 u 选择。
+</blockquote>
+      `
+    },
+    'demo2': {
+      title: '大学物理 — 电磁学重点总结',
+      date: '2026/6/7 19:15',
+      content: `
+<h2>📘 知识大纲</h2>
+<ul>
+  <li><strong>静电场</strong> — 库仑定律、电场强度、高斯定理</li>
+  <li><strong>恒定磁场</strong> — 毕奥-萨伐尔定律、安培环路定理</li>
+  <li><strong>电磁感应</strong> — 法拉第定律、楞次定律、感生电动势</li>
+  <li><strong>麦克斯韦方程组</strong> — 四个方程的物理意义</li>
+</ul>
+
+<h2>🔥 重点提炼</h2>
+<h3>1. 高斯定理</h3>
+<p>通过任意闭合曲面的电通量等于该曲面内所有电荷的代数和除以 ε₀：</p>
+<p>$\\oint \\vec{E}\\cdot d\\vec{A} = \\frac{Q_{enc}}{\\varepsilon_0}$</p>
+
+<h3>2. 法拉第电磁感应定律</h3>
+<p>$\\mathcal{E} = -\\frac{d\\Phi_B}{dt}$ — 负号表示感应电流反抗磁通变化（楞次定律）</p>
+
+<h2>⚠️ 考点提示</h2>
+<ul>
+  <li>📌 利用高斯定理求解对称性电场（球对称、轴对称）</li>
+  <li>📌 动生电动势 vs 感生电动势的区分</li>
+  <li>📌 麦克斯韦方程组各方程的物理含义</li>
+</ul>
+      `
+    },
+    'demo3': {
+      title: '数据结构 — 二叉树与图算法',
+      date: '2026/6/6 22:00',
+      content: `
+<h2>📘 知识大纲</h2>
+<ul>
+  <li><strong>树的基本概念</strong> — 节点、度、深度、高度</li>
+  <li><strong>二叉树遍历</strong> — 前序、中序、后序、层序</li>
+  <li><strong>二叉搜索树</strong> — 查找、插入、删除</li>
+  <li><strong>图的表示</strong> — 邻接矩阵、邻接表</li>
+  <li><strong>图的遍历</strong> — DFS、BFS</li>
+</ul>
+
+<h2>🔥 重点提炼</h2>
+<h3>遍历复杂度</h3>
+<table style="width:100%;border-collapse:collapse;margin:12px 0">
+  <tr style="background:#e8f0fe">
+    <th style="padding:8px 12px;border:1px solid #ddd">遍历方式</th>
+    <th style="padding:8px 12px;border:1px solid #ddd">时间复杂度</th>
+    <th style="padding:8px 12px;border:1px solid #ddd">空间复杂度</th>
+  </tr>
+  <tr><td style="padding:8px 12px;border:1px solid #ddd">DFS（递归）</td><td style="padding:8px 12px;border:1px solid #ddd">O(V+E)</td><td style="padding:8px 12px;border:1px solid #ddd">O(V)</td></tr>
+  <tr><td style="padding:8px 12px;border:1px solid #ddd">BFS（队列）</td><td style="padding:8px 12px;border:1px solid #ddd">O(V+E)</td><td style="padding:8px 12px;border:1px solid #ddd">O(V)</td></tr>
+  <tr><td style="padding:8px 12px;border:1px solid #ddd">Dijkstra</td><td style="padding:8px 12px;border:1px solid #ddd">O((V+E)logV)</td><td style="padding:8px 12px;border:1px solid #ddd">O(V)</td></tr>
+</table>
+
+<h2>⚠️ 考点提示</h2>
+<ul>
+  <li>📌 手写二叉树的前序/中序/后序遍历（递归 + 迭代）</li>
+  <li>📌 BFS 求最短路径（无权图）</li>
+  <li>📌 区分完全二叉树、满二叉树、平衡二叉树</li>
+</ul>
+      `
+    },
+    'demo-new': {
+      title: '机器学习 — 神经网络基础',
+      date: '刚刚',
+      content: `
+<h2>📘 知识大纲</h2>
+<ul>
+  <li><strong>神经元模型</strong> — 感知机、激活函数</li>
+  <li><strong>前馈神经网络</strong> — 正向传播、反向传播</li>
+  <li><strong>损失函数</strong> — MSE、交叉熵</li>
+  <li><strong>优化算法</strong> — SGD、Adam</li>
+</ul>
+
+<h2>🔥 重点提炼</h2>
+<h3>常用激活函数</h3>
+<ul>
+  <li><strong>Sigmoid:</strong> $\\sigma(x) = \\frac{1}{1+e^{-x}}$ — 输出 (0,1)，适合二分类输出层</li>
+  <li><strong>ReLU:</strong> $f(x) = \\max(0, x)$ — 计算简单，缓解梯度消失</li>
+  <li><strong>Softmax:</strong> 多分类输出层，输出概率分布</li>
+</ul>
+
+<h2>⚠️ 考点提示</h2>
+<ul>
+  <li>📌 反向传播的链式求导过程</li>
+  <li>📌 梯度消失/爆炸的原因及解决方案</li>
+  <li>📌 Batch Normalization 的作用</li>
+</ul>
+      `
+    }
+  };
+
+  const d = data[id] || data['demo1'];
+  document.getElementById('resultTitle').textContent = d.title;
+  document.getElementById('resultDate').textContent = d.date;
+  document.getElementById('resultMarkdown').innerHTML = d.content;
+}
+
+// ==================== SHARE PAGE ====================
+function shareDemo() {
+  navigate('share', 'demo1');
+}
+
+function loadShareContent(id) {
+  const data = {
+    'demo1': {
+      title: '高等数学 — 微积分基础复习笔记',
+      content: document.getElementById('resultMarkdown').innerHTML
+    }
+  };
+
+  const d = data[id] || data['demo1'];
+  document.getElementById('shareTitle').textContent = d.title;
+
+  // If we have content loaded already, reuse it; otherwise load demo1
+  if (d.content) {
+    document.getElementById('shareMarkdown').innerHTML = d.content;
+  } else {
+    loadDemoResult(id);
+    document.getElementById('shareMarkdown').innerHTML = document.getElementById('resultMarkdown').innerHTML;
+  }
+}
+
+// ==================== WRONG ANSWER FORM ====================
+function openWrongForm() {
+  document.getElementById('wrongFormTitle').textContent = '添加错题';
+  document.getElementById('wrongFormSubject').value = '';
+  document.getElementById('wrongFormQuestion').value = '';
+  document.getElementById('wrongFormAnswer').value = '';
+  document.getElementById('wrongFormCorrect').value = '';
+  document.getElementById('wrongFormModal').style.display = 'flex';
+}
+
+function closeWrongForm() {
+  document.getElementById('wrongFormModal').style.display = 'none';
+}
+
+function saveWrongAnswer() {
+  const subject = document.getElementById('wrongFormSubject').value || '未分类';
+  const question = document.getElementById('wrongFormQuestion').value.trim();
+  const answer = document.getElementById('wrongFormAnswer').value.trim();
+  const correct = document.getElementById('wrongFormCorrect').value.trim();
+
+  if (!question) { alert('请输入题目'); return; }
+
+  const now = new Date();
+  const dateStr = (now.getMonth()+1) + '/' + now.getDate();
+
+  const card = document.createElement('div');
+  card.className = 'card answer-card';
+  card.dataset.subject = subject;
+  card.innerHTML = `
+    <div class="answer-header">
+      <span class="answer-subject">${escapeHtml(subject)}</span>
+      <span class="answer-date">${dateStr}</span>
+    </div>
+    <div class="answer-question">${escapeHtml(question)}</div>
+    ${correct || answer ? `<div class="answer-answer"><span class="answer-label">答案：</span>${escapeHtml(correct || answer)}</div>` : ''}
+    <div class="answer-actions">
+      <span class="action-link" onclick="alert('🪄 AI 生成相似题功能将在连接后端后可用')">🪄 AI 相似题</span>
+      <span class="action-link" onclick="editWrongAnswer(this)">✏️ 编辑</span>
+      <span class="action-link danger" onclick="if(confirm('确定删除？'))this.closest('.answer-card').remove()">🗑 删除</span>
+    </div>
+  `;
+
+  document.getElementById('wrongAnswersList').appendChild(card);
+
+  // Update summary
+  const count = document.querySelectorAll('#wrongAnswersList .answer-card').length;
+  document.querySelector('#page-wrong .summary').textContent = '共 ' + count + ' 道错题';
+
+  closeWrongForm();
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ==================== WRONG ANSWER SUBJECT FILTER ====================
+function filterWrongSubject(tab, subject) {
+  document.querySelectorAll('#wrongSubjectTabs .tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+
+  document.querySelectorAll('#wrongAnswersList .answer-card').forEach(card => {
+    if (!subject || card.dataset.subject === subject) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// ==================== DRAG & DROP (visual only) ====================
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragging'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragging'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragging');
+  simulateUpload();
+});
+
+// ==================== INIT ====================
+// Preload demo1 content for share page
+loadDemoResult('demo1');
+</script>
+</body>
+</html>

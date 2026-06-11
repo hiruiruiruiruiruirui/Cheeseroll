@@ -1,0 +1,47 @@
+<!-- 首页：文件上传 + 处理进度 -->
+<view class="container">
+  <!-- 顶部说明 -->
+  <view class="hero-section">
+    <view class="hero-title">📚 AI 学习资料整理助手</view>
+    <view class="hero-desc">上传课件，自动生成结构化复习笔记</view>
+  </view>
+
+  <!-- 上传区域 -->
+  <view class="card upload-area" bindtap="chooseFile">
+    <view class="upload-icon">📤</view>
+    <view class="upload-text">点击上传课件</view>
+    <view class="upload-hint">支持 .pptx / .docx / .pdf（最大 50MB）</view>
+    <view class="upload-tips">
+      <text wx:if="{{fileName}}">已选择：{{fileName}}</text>
+    </view>
+  </view>
+
+  <!-- 处理进度（条件显示）-->
+  <view class="card progress-section" wx:if="{{isProcessing}}">
+    <view class="progress-title">{{statusText}}</view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="width: {{progress}}%"></view>
+    </view>
+    <view class="progress-text">{{progress}}%</view>
+  </view>
+
+  <!-- 最近记录预览 -->
+  <view class="section-title" wx:if="{{recentRecords.length > 0}}">📋 最近笔记</view>
+  <view wx:for="{{recentRecords}}" wx:key="id" class="card record-item" bindtap="openRecord" data-id="{{item.id}}">
+    <view class="flex-between">
+      <view class="record-title">{{item.title}}</view>
+      <view class="text-sm text-muted">{{item.created_at}}</view>
+    </view>
+    <view class="flex-between mt-20">
+      <view class="status-badge status-{{item.status}}">{{item.status === 'completed' ? '✅ 已完成' : item.status === 'processing' ? '⏳ 处理中' : '❌ 失败'}}</view>
+      <view class="text-primary text-sm" wx:if="{{item.status === 'completed'}}">查看详情 →</view>
+    </view>
+  </view>
+
+  <!-- 支持格式提示 -->
+  <view class="format-hints">
+    <view class="hint-item">✅ PowerPoint (.pptx)</view>
+    <view class="hint-item">✅ Word 文档 (.docx)</view>
+    <view class="hint-item">✅ PDF 文件 (.pdf)</view>
+  </view>
+</view>

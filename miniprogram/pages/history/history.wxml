@@ -1,0 +1,41 @@
+<!-- pages/history/history.wxml — Study records history -->
+<view class="container">
+  <!-- Loading -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- Empty -->
+  <view wx:elif="{{records.length === 0}}" class="empty-state">
+    <view class="empty-icon">📋</view>
+    <text class="empty-text">还没有学习记录</text>
+    <text class="empty-hint">上传课件即可生成笔记</text>
+  </view>
+
+  <!-- Records list -->
+  <view wx:else>
+    <view class="records-summary">共 {{total}} 条笔记</view>
+    <view
+      wx:for="{{records}}"
+      wx:key="id"
+      class="record-item card"
+      data-id="{{item.id}}"
+      data-status="{{item.status}}"
+      bindtap="openRecord"
+    >
+      <view class="record-header">
+        <text class="record-title">{{item.title}}</text>
+        <text class="record-status">{{item.statusText}}</text>
+      </view>
+      <view class="record-footer">
+        <text class="record-date">{{item.created_at}}</text>
+        <text class="record-link" wx:if="{{item.status === 'completed'}}">查看 →</text>
+      </view>
+    </view>
+
+    <!-- Load more -->
+    <view wx:if="{{hasMore}}" class="load-more">上拉加载更多</view>
+    <view wx:else class="load-more end">— 已加载全部 —</view>
+  </view>
+</view>

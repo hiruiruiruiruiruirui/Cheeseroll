@@ -1,0 +1,82 @@
+/* pages/mine/mine.wxss */
+
+.container {
+  padding: 24rpx;
+}
+
+/* Login card */
+.login-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 24rpx;
+}
+.login-avatar { font-size: 80rpx; margin-bottom: 20rpx; }
+.login-text { font-size: 32rpx; font-weight: 600; color: #333; margin-bottom: 8rpx; }
+.login-hint { font-size: 24rpx; color: #aaa; }
+
+/* Profile */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 20rpx;
+}
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: #e8f0fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  overflow: hidden;
+}
+.profile-info { flex: 1; }
+.nickname { font-size: 34rpx; font-weight: 600; color: #333; }
+.phone { font-size: 24rpx; color: #888; margin-top: 6rpx; }
+
+/* Subscription card */
+.sub-card {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+  background: linear-gradient(135deg, #f8f9ff, #eef1ff);
+}
+.sub-icon { font-size: 40rpx; }
+.sub-info { flex: 1; }
+.sub-title { font-size: 28rpx; font-weight: 500; color: #333; }
+.sub-detail { font-size: 24rpx; color: #888; margin-top: 4rpx; }
+.sub-arrow { font-size: 28rpx; color: #aaa; }
+
+/* Menu */
+.menu-card {
+  margin-bottom: 20rpx;
+}
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #333;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-arrow { color: #ccc; }
+.menu-value { color: #aaa; font-size: 24rpx; }
+
+/* Logout button */
+.btn-logout {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 30rpx;
+  color: #d93025;
+  background: #fff;
+  border: 1rpx solid #fce8e6;
+  border-radius: 16rpx;
+  margin-top: 40rpx;
+}

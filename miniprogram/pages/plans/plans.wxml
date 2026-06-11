@@ -1,0 +1,85 @@
+<!-- pages/plans/plans.wxml — Subscription plans page -->
+<view class="container">
+  <!-- Current subscription banner -->
+  <view class="current-banner card" wx:if="{{subscriptionStatus.has_subscription}}">
+    <view class="banner-title">📋 当前订阅</view>
+    <view class="banner-body">
+      <text class="banner-plan">{{subscriptionStatus.plan_name}}</text>
+      <text class="banner-status {{subscriptionStatus.status}}">
+        {{subscriptionStatus.status === 'active' ? '生效中' : '已过期'}}
+      </text>
+    </view>
+    <view class="banner-quota">
+      <text>今日剩余：{{subscriptionStatus.remaining_today}} 次</text>
+    </view>
+    <view class="banner-expire" wx:if="{{subscriptionStatus.end_date}}">
+      到期时间：{{subscriptionStatus.end_date}}
+    </view>
+  </view>
+
+  <!-- Trial banner -->
+  <view class="trial-banner card" wx:elif="{{subscriptionStatus.trial_used}}">
+    <view class="banner-title">⚠️ 试用已用完</view>
+    <view class="banner-body">
+      <text>您的免费试用次数已用完，请订阅后继续使用。</text>
+    </view>
+  </view>
+
+  <view class="trial-banner card" wx:else>
+    <view class="banner-title">🎉 新用户</view>
+    <view class="banner-body">
+      <text>您还有 1 次免费试用机会！</text>
+    </view>
+  </view>
+
+  <!-- Plan cards -->
+  <view class="section-title">💎 选择方案</view>
+
+  <view class="plans-list">
+    <view
+      wx:for="{{plans}}"
+      wx:key="type"
+      class="plan-card card {{item.recommended ? 'recommended' : ''}} {{isCurrentPlan(item.type) ? 'current' : ''}}"
+      data-type="{{item.type}}"
+    >
+      <!-- Recommended badge -->
+      <view class="plan-badge" wx:if="{{item.recommended}}">🔥 推荐</view>
+
+      <!-- Current plan badge -->
+      <view class="plan-badge current-badge" wx:if="{{isCurrentPlan(item.type)}}">当前方案</view>
+
+      <view class="plan-name">{{item.name}}</view>
+
+      <view class="plan-price">
+        <text class="price-symbol">¥</text>
+        <text class="price-num">{{item.price.replace('¥','')}}</text>
+        <text class="price-duration">/{{item.duration}}</text>
+      </view>
+
+      <view class="plan-quota">每日 {{item.quota}}</view>
+
+      <!-- Features list -->
+      <view class="plan-features">
+        <view wx:for="{{item.features}}" wx:key="*this" class="feature-item">
+          ✅ {{item}}
+        </view>
+      </view>
+
+      <!-- Subscribe button -->
+      <button
+        class="btn-subscribe {{item.recommended ? 'primary' : ''}}"
+        data-type="{{item.type}}"
+        bindtap="subscribe"
+        loading="{{subscribingPlan === item.type}}"
+        disabled="{{subscribingPlan || isCurrentPlan(item.type)}}"
+      >
+        {{isCurrentPlan(item.type) ? '当前方案' : (subscribingPlan === item.type ? '支付中...' : '立即订阅')}}
+      </button>
+    </view>
+  </view>
+
+  <!-- Footer note -->
+  <view class="footer-note">
+    <text>订阅自动续费说明：当前版本不支持自动续费，到期后需手动续订。</text>
+  </view>
+</view>

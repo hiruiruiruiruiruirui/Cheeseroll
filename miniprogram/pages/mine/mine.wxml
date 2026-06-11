@@ -1,0 +1,65 @@
+<!-- pages/mine/mine.wxml — User profile & settings -->
+<view class="container">
+  <!-- Not logged in -->
+  <view wx:if="{{!isLoggedIn}}" class="login-card card" bindtap="handleLogin">
+    <view class="login-avatar">📚</view>
+    <view class="login-text">点击登录</view>
+    <view class="login-hint">使用微信一键登录</view>
+  </view>
+
+  <!-- Logged in -->
+  <view wx:else>
+    <!-- Profile card -->
+    <view class="profile-card card">
+      <view class="avatar">{{userInfo.avatar_url || '📚'}}</view>
+      <view class="profile-info">
+        <view class="nickname">{{userInfo.nickname || '未命名用户'}}</view>
+        <view class="phone" wx:if="{{userInfo.phone}}">{{userInfo.phone}}</view>
+      </view>
+    </view>
+
+    <!-- Subscription status -->
+    <view class="card sub-card" bindtap="goTo" data-page="/pages/plans/plans">
+      <view class="sub-icon">💎</view>
+      <view class="sub-info">
+        <view class="sub-title" wx:if="{{subscriptionStatus.has_subscription && subscriptionStatus.status === 'active'}}">
+          {{subscriptionStatus.plan_name}} · 生效中
+        </view>
+        <view class="sub-title" wx:elif="{{!subscriptionStatus.trial_used}}">
+          免费试用中
+        </view>
+        <view class="sub-title" wx:else>
+          未订阅
+        </view>
+        <view class="sub-detail">{{getSubLabel()}}</view>
+      </view>
+      <view class="sub-arrow">→</view>
+    </view>
+
+    <!-- Menu items -->
+    <view class="menu-card card">
+      <view class="menu-item" bindtap="goTo" data-page="/pages/history/history">
+        <text>📋 我的笔记</text><text class="menu-arrow">→</text>
+      </view>
+      <view class="menu-item" bindtap="goTo" data-page="/pages/wrong-answers/wrong-answers">
+        <text>📝 错题本</text><text class="menu-arrow">→</text>
+      </view>
+      <view class="menu-item" bindtap="goTo" data-page="/pages/plans/plans">
+        <text>💎 订阅管理</text><text class="menu-arrow">→</text>
+      </view>
+    </view>
+
+    <!-- About -->
+    <view class="menu-card card">
+      <view class="menu-item">
+        <text>ℹ️ 关于</text><text class="menu-value">v1.0.0</text>
+      </view>
+      <view class="menu-item">
+        <text>📧 反馈</text><text class="menu-arrow">→</text>
+      </view>
+    </view>
+
+    <!-- Logout -->
+    <button class="btn-logout" bindtap="logout">退出登录</button>
+  </view>
+</view>
