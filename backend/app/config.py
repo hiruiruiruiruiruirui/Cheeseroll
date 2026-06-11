@@ -14,6 +14,18 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/study_assistant"
 
+    @property
+    def async_db_url(self):
+        """Convert Railway's sync DATABASE_URL to asyncpg format."""
+        url = self.DATABASE_URL
+        if "postgresql+asyncpg" in url:
+            return url
+        if url.startswith("postgresql://"):
+            return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if url.startswith("postgres://"):
+            return url.replace("postgres://", "postgresql+asyncpg://", 1)
+        return url
+
     # Tencent COS
     COS_SECRET_ID: str = ""
     COS_SECRET_KEY: str = ""
