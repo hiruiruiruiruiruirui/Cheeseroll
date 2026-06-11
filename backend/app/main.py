@@ -54,7 +54,7 @@ def create_app() -> FastAPI:
         try:
             from sqlalchemy.ext.asyncio import create_async_engine
             from sqlalchemy import text
-            engine = create_async_engine(settings.DATABASE_URL, echo=False)
+            engine = create_async_engine(settings.db_url_with_ssl, echo=False)
             async with engine.connect() as conn:
                 tables = (await conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'"))).fetchall()
                 await engine.dispose()
