@@ -48,6 +48,20 @@ def create_app() -> FastAPI:
     async def health():
         return {"status": "ok", "env": settings.APP_ENV}
 
+    # DB diagnostic
+    @app.get("/db-check")
+    async def db_check():
+        try:
+            from sqlalchemy.ext.asyncio import create_async_engine
+            from sqlalchemy import text
+            engine = create_async_engine(settings.DATABASE_URL, echo=False)
+            async with engine.connect() as conn:
+                tables = (await conn.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'"))).fetchall()
+                await engine.dispose()
+                return {"db_ok": True, "db_url": settings.DATABASE_URL[:30]+"...", "tables": [t[0] for t in tables]}
+        except Exception as e:
+            return {"db_ok": False, "error": str(e)}
+
     return app
 
 
