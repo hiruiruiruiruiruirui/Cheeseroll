@@ -1,7 +1,8 @@
 // utils/api.js — Axios instance with auth token interceptor
 import axios from 'axios'
 
-const API_BASE = '/api/v1'
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const API_BASE = isLocal ? '/api/v1' : 'https://cheeseroll-production.up.railway.app/api/v1'
 
 const api = axios.create({
   baseURL: API_BASE,
