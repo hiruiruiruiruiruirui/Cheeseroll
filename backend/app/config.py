@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/study_assistant"
 
+    @property
+    def db_url_with_ssl(self):
+        url = self.DATABASE_URL
+        if "?ssl=" not in url:
+            return url + "?ssl=require"
+        return url
+
     # Tencent COS
     COS_SECRET_ID: str = ""
     COS_SECRET_KEY: str = ""
