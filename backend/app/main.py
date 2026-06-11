@@ -12,11 +12,8 @@ from .api.v1.router import api_router
 async def lifespan(app: FastAPI):
     """Application lifespan: startup and shutdown events."""
     # Startup: auto-create tables
-    try:
-        from .init_db import init_db
-        await init_db()
-    except Exception as e:
-        print(f"DB init skipped: {e}")
+    from .init_db import init_db
+    await init_db()
     yield
     # Shutdown
     from .api.deps import engine
