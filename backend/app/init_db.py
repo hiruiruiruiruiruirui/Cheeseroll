@@ -22,12 +22,15 @@ async def init_db():
             existing = r.scalar()
             print(f"Existing plans: {existing}")
             if existing == 0:
-                await conn.execute(text("""
-                    INSERT INTO subscription_plans (plan_type, name, price_cents, duration_days, daily_quota, features) VALUES
+                for plan_type, name, price, days, quota, features in [
                     ('daily','包天',990,1,1,'["1 processing","1 PDF"]'),
                     ('monthly','包月',4900,30,10,'["Unlimited processing","Unlimited exports","Multi-format"]'),
-                    ('quarterly','包季度',9900,90,10,'["Unlimited processing","Unlimited exports","Multi-format","Wrong-answer book","Learning paths"]')
-                """))
+                    ('quarterly','包季度',9900,90,10,'["Unlimited processing","Unlimited exports","Multi-format","Wrong-answer book","Learning paths"]'),
+                ]:
+                    await conn.execute(text("""
+                        INSERT INTO subscription_plans (plan_type, name, price_cents, duration_days, daily_quota, features)
+                        VALUES (:t, :n, :p, :d, :q, :f)
+                    """), {"t": plan_type, "n": name, "p": price, "d": days, "q": quota, "f": features})
                 print("Plans seeded")
     except Exception as e:
         print(f"Seed error: {e}")
